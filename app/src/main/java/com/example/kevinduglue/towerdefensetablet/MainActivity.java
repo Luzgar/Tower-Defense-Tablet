@@ -26,12 +26,13 @@ import java.net.URISyntaxException;
 
 public class MainActivity extends AwesomeSplash {
 
+    int delay = 0; // 2000
 
     @Override
     public void initSplash(ConfigSplash configSplash){
         //Customize Circular Reveal
         configSplash.setBackgroundColor(R.color.fillColor); //any color you want form colors.xml
-        configSplash.setAnimCircularRevealDuration(2000); //int ms
+        configSplash.setAnimCircularRevealDuration(delay); //int ms
         configSplash.setRevealFlagX(Flags.REVEAL_BOTTOM);  //or Flags.REVEAL_LEFT
         configSplash.setRevealFlagY(Flags.REVEAL_BOTTOM); //or Flags.REVEAL_TOP
 
@@ -39,14 +40,14 @@ public class MainActivity extends AwesomeSplash {
 
         //Customize Logo
         configSplash.setLogoSplash(R.mipmap.ic_launcher); //or any other drawable
-        configSplash.setAnimLogoSplashDuration(2000); //int ms
+        configSplash.setAnimLogoSplashDuration(delay); //int ms
         configSplash.setAnimLogoSplashTechnique(Techniques.FadeIn); //choose one form Techniques (ref: https://github.com/daimajia/AndroidViewAnimations)
 
         //Customize Title
         configSplash.setTitleSplash("Crunch Defense");
         configSplash.setTitleTextColor(R.color.white);
         configSplash.setTitleTextSize(30f); //float value
-        configSplash.setAnimTitleDuration(3000);
+        configSplash.setAnimTitleDuration(delay);
         configSplash.setAnimTitleTechnique(Techniques.StandUp);
     }
 

@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.kevinduglue.towerdefensetablet.socket.SocketSingleton;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -39,43 +40,37 @@ public class InitialisationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         mMainScreenTitle.setText("En attente du commencement de la partie");
-        try {
-            mSocket = IO.socket("http://10.0.2.2:3000");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+
+        mSocket = SocketSingleton.getInstance();
 
         mSocket.on("setup", new Emitter.Listener() {
             @Override
             public void call(final Object... args) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            System.out.println(args[0]);
-                            JSONObject data = (JSONObject) args[0];
-                            if(data.getString("action").equals("name")) {
-                                mInputName.setVisibility(View.VISIBLE);
-                                mSaveNameButton.setVisibility(View.VISIBLE);
-                                mMainScreenTitle.setVisibility(View.GONE);
-                            }
-                            if(data.getString("action").equals("ready")) {
-                                mMainScreenTitle.setText("La partie peut commencer !");
-                                mInputName.setVisibility(View.INVISIBLE);
-                                mSaveNameButton.setVisibility(View.INVISIBLE);
-                                Intent intent = new Intent(getApplicationContext(), HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                try {
+                    System.out.println(args[0]);
+                    JSONObject data = (JSONObject) args[0];
+                    if(data.getString("action").equals("name")) {
+                        mInputName.setVisibility(View.VISIBLE);
+                        mSaveNameButton.setVisibility(View.VISIBLE);
+                        mMainScreenTitle.setVisibility(View.GONE);
                     }
-                });
+                    if(data.getString("action").equals("ready")) {
+                        mMainScreenTitle.setText("La partie peut commencer !");
+                        mInputName.setVisibility(View.INVISIBLE);
+                        mSaveNameButton.setVisibility(View.INVISIBLE);
+                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                }
+            });
             }
         });
-
-
-        mSocket.connect();
     }
 
     @OnClick(R.id.saveName)
@@ -89,5 +84,11 @@ public class InitialisationActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mSocket.off("setup");
     }
 }
