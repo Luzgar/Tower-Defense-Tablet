@@ -12,11 +12,11 @@
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape">
-            <intent-filter>
+            <!--<intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter>-->
         </activity>
         <activity android:name=".InitialisationActivity"
             android:theme="@style/AppTheme.NoActionBar"
@@ -25,11 +25,11 @@
         <activity android:name=".HomeActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="landscape">
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
     </application>
 
