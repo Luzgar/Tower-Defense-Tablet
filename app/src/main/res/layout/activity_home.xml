@@ -1,58 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/tools"
+    android:id="@+id/relLayout"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <GridLayout
+
+
+    <GridView
         android:layout_width="200dp"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
+        android:horizontalSpacing="16dp"
+        android:padding="16dp"
+        android:verticalSpacing="16dp"
+        android:background="@color/black"
         android:id="@+id/monsterGridLayout">
-
-        <ImageButton
-            android:id="@+id/monster1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_column="0"
-            android:layout_row="0"
-            app:srcCompat="@drawable/bird_monster_2" />
-
-        <ImageButton
-            android:id="@+id/monster2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="1"
-            app:srcCompat="@drawable/one_eyed_horned_monster" />
-        <ImageButton
-            android:id="@+id/monster3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_column="0"
-            android:layout_row="2"
-            app:srcCompat="@drawable/walking_skull_head_monster" />
-
-        <ImageButton
-            android:id="@+id/monster4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_column="0"
-            android:layout_row="3"
-            app:srcCompat="@drawable/scary_monster" />
-    </GridLayout>
+    </GridView>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentStart="false"
         android:layout_alignParentTop="true"
+        android:background="@color/black"
         android:layout_toEndOf="@+id/monsterGridLayout">
 
         <RelativeLayout
@@ -60,7 +38,6 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentTop="true"
             android:background="@color/black">
 
             <ImageView
@@ -84,52 +61,129 @@
                 android:textColor="@color/white"
                 android:textSize="26sp" />
 
-        </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/mapView"
-            android:layout_width="wrap_content"
-            android:layout_height="475dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/relativeLayout" />
-
-        <RelativeLayout
-            android:id="@+id/pathSelection"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/mapView">
-            <RadioGroup
-                android:id="@+id/pathRadioGroup"
+            <TextView
+                android:id="@+id/timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:orientation="horizontal" >
+                android:layout_centerVertical="true"
+                android:background="@color/black"
+                android:fontFamily="casual"
+                android:text="timerTextView"
+                android:textColor="@color/white"
+                android:textSize="28sp" />
 
-            </RadioGroup>
         </RelativeLayout>
 
-        <ImageButton
-            android:id="@+id/castleBase"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/castle" />
+        <com.example.kevinduglue.towerdefensetablet.map.MapView
+            android:id="@+id/mapView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/relativeLayout"
+            />
 
-        <TextView
-            android:id="@+id/timer"
+        <com.github.clans.fab.FloatingActionButton
+        android:id="@+id/power1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/boostattack"
+        app:fab_progress="0"
+        app:fab_progress_backgroundColor="#4D000000"
+        app:fab_progress_color="#FF009688"
+        app:fab_progress_indeterminate="false"
+        app:fab_progress_max="100"
+        app:fab_progress_showBackground="true"
+        fab:fab_colorNormal="@color/app_primary"/>
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/power2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/mapView"
-            android:layout_centerHorizontal="true"
-            android:background="@color/black"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/boostspeed"
+            app:fab_progress="0"
+            app:fab_progress_backgroundColor="#4D000000"
+            app:fab_progress_color="#FF009688"
+            app:fab_progress_indeterminate="false"
+            app:fab_progress_max="100"
+            app:fab_progress_showBackground="true"
+            fab:fab_colorNormal="@color/app_primary" />
+
+        <AbsoluteLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/castleBase"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="38dp"
+                android:layout_marginTop="114dp"
+                android:layout_x="668dp"
+                android:layout_y="441dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/castle" />
+
+            <ImageButton
+                android:id="@+id/churchBase"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="20dp"
+                android:layout_x="6dp"
+                android:layout_y="342dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/cathedral" />
+
+            <ImageButton
+                android:id="@+id/millBase"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginEnd="48dp"
+                android:layout_marginTop="61dp"
+                android:layout_x="288dp"
+                android:layout_y="70dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                app:srcCompat="@drawable/windmill" />
+
+            <ImageButton
+                android:id="@+id/hostelBase"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_marginStart="251dp"
+                android:layout_marginTop="36dp"
+                android:layout_x="428dp"
+                android:layout_y="76dp"
+                android:background="@null"
+                android:scaleType="centerCrop"
+                app:srcCompat="@mipmap/tavern" />
+        </AbsoluteLayout>
+
+
+
+        <TextView
+            android:id="@+id/spendGoldTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/relativeLayout"
+            android:background="@color/black_half_transparent"
             android:fontFamily="casual"
-            android:text="timerTextView"
+            android:text="TextView"
             android:textColor="@color/white"
-            android:textSize="28sp" />
+            android:textSize="26sp"
+            android:visibility="gone" />
+
     </RelativeLayout>
 
 </RelativeLayout>

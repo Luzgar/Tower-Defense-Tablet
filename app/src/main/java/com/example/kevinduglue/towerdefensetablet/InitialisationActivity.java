@@ -57,7 +57,7 @@ public class InitialisationActivity extends AppCompatActivity {
                         mSaveNameButton.setVisibility(View.VISIBLE);
                         mMainScreenTitle.setVisibility(View.GONE);
                     }
-                    if(data.getString("action").equals("ready")) {
+                    if(data.getString("action").equals("start")) {
                         mMainScreenTitle.setText("La partie peut commencer !");
                         mInputName.setVisibility(View.INVISIBLE);
                         mSaveNameButton.setVisibility(View.INVISIBLE);

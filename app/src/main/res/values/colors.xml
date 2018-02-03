@@ -5,7 +5,9 @@
     <color name="colorAccent">#FF4081</color>
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-
-    <color name="path1">#03A9F4</color>
-    <color name="path2">#9C27B0</color>
+    <color name="black_half_transparent">#80000000</color>
+    <color name="disable_cardview">#99000000</color>
+    <color name="enable_cardview">#00000000</color>
+    <color name="path2">#03A9F4</color>
+    <color name="path1">#9C27B0</color>
 </resources>

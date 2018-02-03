@@ -18,7 +18,7 @@ public class SocketSingleton {
             return mSocket;
         } else {
             try {
-                mSocket = IO.socket("http://192.168.43.254:9091");
+                mSocket = IO.socket("http://192.168.1.29:9091");
                 mSocket.connect();
             } catch (URISyntaxException e) {
                 e.printStackTrace();

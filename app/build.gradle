@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.kevinduglue.towerdefensetablet"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -32,4 +32,8 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.10'
     compile 'com.github.sd6352051:NiftyDialogEffects:v1.0.3'
+    compile 'com.android.support:cardview-v7:21.0.+'
+    compile files('libs/polygon-1.0.2.jar')
+    compile 'com.github.clans:fab:1.6.4'
+    implementation 'uk.co.samuelwall:material-tap-target-prompt:2.6.0'
 }
