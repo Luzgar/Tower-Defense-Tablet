@@ -8,6 +8,9 @@
     <color name="black_half_transparent">#80000000</color>
     <color name="disable_cardview">#99000000</color>
     <color name="enable_cardview">#00000000</color>
+    <color name="transparent">#00000000</color>
     <color name="path2">#03A9F4</color>
     <color name="path1">#9C27B0</color>
+    <color name="crunch_background">#34495e</color>
+    <color name="crunch_text">#1abc9c</color>
 </resources>

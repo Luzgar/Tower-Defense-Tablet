@@ -13,8 +13,9 @@ public class Monster {
     private String name;
     private int price;
     private boolean disable;
+    private int disableTime;
 
-    public Monster(int id, String name, int health, int attack, int price, int image, boolean disable) {
+    public Monster(int id, String name, int health, int attack, int price, int image, boolean disable, int disableTime) {
         this.id = id;
         this.health = health;
         this.attack = attack;
@@ -22,6 +23,7 @@ public class Monster {
         this.name = name;
         this.price = price;
         this.disable = disable;
+        this.disableTime = disableTime;
     }
 
     public int getId() {
@@ -78,5 +80,13 @@ public class Monster {
 
     public void setDisable(boolean disable) {
         this.disable = disable;
+    }
+
+    public int getDisableTime() {
+        return disableTime;
+    }
+
+    public void setDisableTime(int disableTime) {
+        this.disableTime = disableTime;
     }
 }

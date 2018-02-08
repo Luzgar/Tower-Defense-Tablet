@@ -37,8 +37,15 @@ public class MapView extends View {
     boolean drawMap = true;
     Bitmap mFinalbitmap;
 
+    Paint rectTutoPaint;
+
+    boolean isTutorial = false;
+
     public MapView(Context context, AttributeSet t) {
         super(context, t);
+
+        rectTutoPaint = new Paint();
+        rectTutoPaint.setColor(getResources().getColor(R.color.black_half_transparent));
 
         polygonbottomLeft = Polygon.Builder()
                 .addVertex(new Point(780, 1350))
@@ -62,10 +69,10 @@ public class MapView extends View {
                 .build();
 
         polygonMidRight = Polygon.Builder()
-                .addVertex(new Point(800, 900))
-                .addVertex(new Point(1410, 900))
-                .addVertex(new Point(1410, 940))
-                .addVertex(new Point(800, 940))
+                .addVertex(new Point(800, 870))
+                .addVertex(new Point(1410, 870))
+                .addVertex(new Point(1410, 970))
+                .addVertex(new Point(800, 970))
                 .build();
 
         polygonBottomRight = Polygon.Builder()
@@ -96,6 +103,10 @@ public class MapView extends View {
             holder.addPathEffect(phase);
             canvas.drawPath(holder.path, holder.paint);
         }
+
+        if(isTutorial)
+            canvas.drawRect(0, 0, (canvas.getWidth()/2)-58, canvas.getHeight(), rectTutoPaint);
+
         invalidate();
     }
 
@@ -289,5 +300,9 @@ public class MapView extends View {
 
     public void setPathSelected(int pathSelected) {
         this.pathSelected = pathSelected;
+    }
+
+    public void isTutorial(boolean isTutorial) {
+        this.isTutorial = isTutorial;
     }
 }

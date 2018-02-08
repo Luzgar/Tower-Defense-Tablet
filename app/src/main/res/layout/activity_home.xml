@@ -8,18 +8,16 @@
     android:layout_height="match_parent">
 
 
-
     <GridView
+        android:id="@+id/monsterGridLayout"
         android:layout_width="200dp"
         android:layout_height="match_parent"
+        android:layout_above="@+id/button3"
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
+        android:background="@color/black"
         android:horizontalSpacing="16dp"
         android:padding="16dp"
-        android:verticalSpacing="16dp"
-        android:background="@color/black"
-        android:id="@+id/monsterGridLayout">
-    </GridView>
+        android:verticalSpacing="16dp"></GridView>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -31,7 +29,8 @@
         android:layout_alignParentStart="false"
         android:layout_alignParentTop="true"
         android:background="@color/black"
-        android:layout_toEndOf="@+id/monsterGridLayout">
+        android:layout_toEndOf="@+id/monsterGridLayout"
+        android:id="@+id/relativeLayout2">
 
         <RelativeLayout
             android:id="@+id/relativeLayout"
@@ -84,20 +83,21 @@
             />
 
         <com.github.clans.fab.FloatingActionButton
-        android:id="@+id/power1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/boostattack"
-        app:fab_progress="0"
-        app:fab_progress_backgroundColor="#4D000000"
-        app:fab_progress_color="#FF009688"
-        app:fab_progress_indeterminate="false"
-        app:fab_progress_max="100"
-        app:fab_progress_showBackground="true"
-        fab:fab_colorNormal="@color/app_primary"/>
+            android:id="@+id/power1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/boostattack"
+            app:fab_progress="0"
+            app:fab_progress_backgroundColor="#4D000000"
+            app:fab_progress_color="#FF009688"
+            app:fab_progress_indeterminate="false"
+            app:fab_progress_max="100"
+            app:fab_progress_showBackground="true"
+            android:visibility="gone"
+            fab:fab_colorNormal="@color/app_primary"/>
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/power2"
@@ -167,6 +167,18 @@
                 android:background="@null"
                 android:scaleType="centerCrop"
                 app:srcCompat="@mipmap/tavern" />
+
+            <ImageView
+                android:id="@+id/pathTutorial"
+                android:layout_width="278dp"
+                android:layout_height="50dp"
+                android:layout_x="423dp"
+                android:layout_y="478dp"
+                android:alpha="0.0"
+                android:background="@drawable/pathtutorial"
+                fab:layout_editor_absoluteX="512dp"
+                fab:layout_editor_absoluteY="504dp" />
+
         </AbsoluteLayout>
 
 
@@ -185,5 +197,13 @@
             android:visibility="gone" />
 
     </RelativeLayout>
+
+    <Button
+        android:id="@+id/beginGame"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/relativeLayout2"
+        android:text="Commencer !" />
 
 </RelativeLayout>

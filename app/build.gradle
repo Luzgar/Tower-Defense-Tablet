@@ -36,4 +36,5 @@ dependencies {
     compile files('libs/polygon-1.0.2.jar')
     compile 'com.github.clans:fab:1.6.4'
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.6.0'
+    compile 'com.google.code.gson:gson:2.8.2'
 }

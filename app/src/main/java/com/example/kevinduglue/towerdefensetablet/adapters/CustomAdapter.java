@@ -36,7 +36,7 @@ public class CustomAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int i) {
+    public Monster getItem(int i) {
         return monsters.get(i);
     }
 
@@ -52,7 +52,7 @@ public class CustomAdapter extends BaseAdapter {
             view= LayoutInflater.from(c).inflate(R.layout.cardview_monster,viewGroup,false);
         }
 
-        final Monster s= (Monster) this.getItem(i);
+        final Monster s= this.getItem(i);
 
         ImageView img= view.findViewById(R.id.monsterImg);
         TextView attack= view.findViewById(R.id.attack);
@@ -87,5 +87,9 @@ public class CustomAdapter extends BaseAdapter {
 
     public Monster getMonster(int index) {
         return this.monsters.get(index);
+    }
+
+    public ArrayList<Monster> getMonsters() {
+        return this.monsters;
     }
 }
