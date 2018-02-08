@@ -107,7 +107,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isTutorial = getIntent().getBooleanExtra("tutorial", false);
+        isTutorial = getIntent().getBooleanExtra("tutorial", true);
         attackerName = getIntent().getStringExtra("name");
 
         setContentView(R.layout.activity_home);
@@ -152,6 +152,10 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
         if(isTutorial) {
             goldAmount = 100000000;
+            for(int i = 0; i < adapter.getMonsters().size(); ++i) {
+                adapter.getMonster(i).setDisable(false);
+            }
+
             mGoldAmount.setText(DecimalFormatSymbols.getInstance().getInfinity()); // Logo Infini pour le montant d'or pendant le tutoriel
             mTimer.setText(DecimalFormatSymbols.getInstance().getInfinity()); // Logo Infini pour le temps restant pendant le tutoriel
 
@@ -203,7 +207,6 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
                     for(int i = 0; i < adapter.getMonsters().size(); ++i) {
                         if (adapter.getMonster(i).getPrice() <= goldAmount){
-                            System.out.println("Index : " + i);
                             adapter.getMonster(i).setDisable(false);
                             adapter.notifyDataSetChanged();
                         }
@@ -397,6 +400,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
         if(canPower2) {
             Log.d("speedpower", "speedpower activated");
             Snackbar.make(findViewById(R.id.relLayout), "Vitesse des monstres améliorées temporairement", Snackbar.LENGTH_SHORT).show();
+            speedPowerShowCase.dismiss();
             canPower2 = false;
             try {
                 mSocket.emit("power", new JSONObject().put("power", "speed").put("name", attackerName));
@@ -496,14 +500,12 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
     private void createTutorial() {
         speedPowerShowCase = new MaterialTapTargetPrompt.Builder(HomeActivity.this)
-                .setTarget(mGridView.getChildAt(2))
+                .setTarget(R.id.power2)
                 .setPrimaryText("Attaquer une base ennemie")
                 .setSecondaryText("Vous disposez d'un pouvoir pour améliorer temporairement la vitesse de vos monstres présent sur la carte. Pour l'activer, secouez la tablette !")
                 .setBackButtonDismissEnabled(false)
                 .setAutoDismiss(false)
                 .setAutoFinish(false)
-                .setPromptBackground(new RectanglePromptBackground())
-                .setPromptFocal(new RectanglePromptFocal())
                 .setPromptStateChangeListener(new MaterialTapTargetPrompt.PromptStateChangeListener()
                 {
                     @Override
