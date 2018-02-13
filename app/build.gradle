@@ -37,4 +37,5 @@ dependencies {
     compile 'com.github.clans:fab:1.6.4'
     implementation 'uk.co.samuelwall:material-tap-target-prompt:2.6.0'
     compile 'com.google.code.gson:gson:2.8.2'
+    compile 'com.android.support:percent:26.1.0'
 }

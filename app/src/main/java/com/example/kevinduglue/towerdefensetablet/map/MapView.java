@@ -41,46 +41,16 @@ public class MapView extends View {
 
     boolean isTutorial = false;
 
+    int width;
+    int height;
+
     public MapView(Context context, AttributeSet t) {
+        //1648  1456
         super(context, t);
 
         rectTutoPaint = new Paint();
-        rectTutoPaint.setColor(getResources().getColor(R.color.black_half_transparent));
+        rectTutoPaint.setColor(getResources().getColor(R.color.fog_tutorial));
 
-        polygonbottomLeft = Polygon.Builder()
-                .addVertex(new Point(780, 1350))
-                .addVertex(new Point(130, 1350))
-                .addVertex(new Point(130, 950))
-                .addVertex(new Point(780, 950))
-                .build();
-
-        polygonmidLeft = Polygon.Builder()
-                .addVertex(new Point(800, 800))
-                .addVertex(new Point(800, 1175))
-                .addVertex(new Point(440, 1175))
-                .addVertex(new Point(440, 800))
-                .build();
-
-        polygonTopRight = Polygon.Builder()
-                .addVertex(new Point(800, 900))
-                .addVertex(new Point(800, 210))
-                .addVertex(new Point(1525, 210))
-                .addVertex(new Point(1525, 900))
-                .build();
-
-        polygonMidRight = Polygon.Builder()
-                .addVertex(new Point(800, 870))
-                .addVertex(new Point(1410, 870))
-                .addVertex(new Point(1410, 970))
-                .addVertex(new Point(800, 970))
-                .build();
-
-        polygonBottomRight = Polygon.Builder()
-                .addVertex(new Point(800, 1000))
-                .addVertex(new Point(1410, 1000))
-                .addVertex(new Point(1410, 1350))
-                .addVertex(new Point(800, 1350))
-                .build();
 
         mFinalbitmap = BitmapFactory.decodeResource(getResources(), R.drawable.map);
     }
@@ -89,7 +59,9 @@ public class MapView extends View {
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if(drawMap){
-            System.out.println(canvas.getWidth()+"  "+ canvas.getHeight());
+            this.width = canvas.getWidth();
+            this.height = canvas.getHeight();
+            generateArea();
             mFinalbitmap = Bitmap.createScaledBitmap(mFinalbitmap, canvas.getWidth(), canvas.getHeight(),true);
             drawMap = false;
         }
@@ -146,41 +118,79 @@ public class MapView extends View {
         }
     }
 
+    private void generateArea() {
+        polygonbottomLeft = Polygon.Builder()
+                .addVertex(new Point(width/2.11, height/1.07))
+                .addVertex(new Point(width/12.67, height/1.07))
+                .addVertex(new Point(width/12.67, height/1.53))
+                .addVertex(new Point(width/2.11, height/1.53))
+                .build();
+
+        polygonmidLeft = Polygon.Builder()
+                .addVertex(new Point(width/2.06, height/1.82))
+                .addVertex(new Point(width/2.06, height/1.23))
+                .addVertex(new Point(width/3.74, height/1.23))
+                .addVertex(new Point(width/3.74, height/1.82))
+                .build();
+
+        polygonTopRight = Polygon.Builder()
+                .addVertex(new Point(width/2.06, height/1.61))
+                .addVertex(new Point(width/2.06, height/6.93))
+                .addVertex(new Point(width/1.08, height/6.93))
+                .addVertex(new Point(width/1.08, height/1.61))
+                .build();
+
+        polygonMidRight = Polygon.Builder()
+                .addVertex(new Point(width/2.06, height/1.67))
+                .addVertex(new Point(width/1.16, height/1.67))
+                .addVertex(new Point(width/1.16, height/1.50))
+                .addVertex(new Point(width/2.06, height/1.50))
+                .build();
+
+        polygonBottomRight = Polygon.Builder()
+                .addVertex(new Point(width/2.06, height/1.4))
+                .addVertex(new Point(width/1.16, height/1.4))
+                .addVertex(new Point(width/1.16, height/1.07))
+                .addVertex(new Point(width/2.06, height/1.07))
+                .build();
+
+    }
+
     public void generateChurchPaths(boolean draw) {
         holderList.clear();
         pathSelected = -1;
         baseSelected = (draw) ? 0 : -1;
         if(draw) {
             Path beginMutualPath = new Path();
-            beginMutualPath.moveTo(800, 1400);
-            beginMutualPath.lineTo(800, 1175);
+            beginMutualPath.moveTo((float) (width/2.06), (float) (height/1.04));
+            beginMutualPath.lineTo((float) (width/2.06), (float) (height/1.23));
             holderList.add(new Holder(Color.BLACK, beginMutualPath));
 
             Path path1Church = new Path();
-            path1Church.moveTo(800, 1175);
-            path1Church.lineTo(550, 1175);
-            path1Church.lineTo(550, 1320);
-            path1Church.lineTo(230, 1320);
-            path1Church.lineTo(230, 1170);
-            path1Church.lineTo(440, 1170);
-            path1Church.lineTo(440, 850);
+            path1Church.moveTo((float) (width/2.06), (float) (height/1.23));
+            path1Church.lineTo((float) (width/2.99), (float) (height/1.23));
+            path1Church.lineTo((float) (width/2.99), (float) (height/1.10));
+            path1Church.lineTo((float) (width/7.16), (float) (height/1.10));
+            path1Church.lineTo((float) (width/7.16), (float) (height/1.24));
+            path1Church.lineTo((float) (width/3.74), (float) (height/1.24));
+            path1Church.lineTo((float) (width/3.74), (float) (height/1.71));
             holderList.add(new Holder(Color.RED, path1Church));
 
             Path path2Church = new Path();
-            path2Church.moveTo(800, 1175);
-            path2Church.lineTo(800, 920);
-            path2Church.lineTo(550, 920);
-            path2Church.lineTo(550, 850);
-            path2Church.lineTo(440, 850);
+            path2Church.moveTo((float) (width/2.06), (float) (height/1.23));
+            path2Church.lineTo((float) (width/2.06), (float) (height/1.58));
+            path2Church.lineTo((float) (width/2.99), (float) (height/1.58));
+            path2Church.lineTo((float) (width/2.99), (float) (height/1.71));
+            path2Church.lineTo((float) (width/3.74), (float) (height/1.71));
             holderList.add(new Holder(Color.BLUE, path2Church));
 
             Path endMutualPath = new Path();
-            endMutualPath.moveTo(440, 850);
-            endMutualPath.lineTo(440, 760);
-            endMutualPath.lineTo(300, 760);
-            endMutualPath.lineTo(300, 920);
-            endMutualPath.lineTo(130, 920);
-            endMutualPath.lineTo(130, 850);
+            endMutualPath.moveTo((float) (width/3.74), (float) (height/1.71));
+            endMutualPath.lineTo((float) (width/3.74), (float) (height/1.91));
+            endMutualPath.lineTo((float) (width/5.49), (float) (height/1.91));
+            endMutualPath.lineTo((float) (width/5.49), (float) (height/1.58));
+            endMutualPath.lineTo((float) (width/12.67), (float) (height/1.58));
+            endMutualPath.lineTo((float) (width/12.67), (float) (height/1.71));
             holderList.add(new Holder(Color.BLACK, endMutualPath));
         }
     }
@@ -190,15 +200,15 @@ public class MapView extends View {
         baseSelected = (draw) ? 1 : -1;
         if(draw) {
             Path windMillPath = new Path();
-            windMillPath.moveTo(800, 1400);
-            windMillPath.lineTo(800, 920);
-            windMillPath.lineTo(550, 920);
-            windMillPath.lineTo(550, 690);
-            windMillPath.lineTo(695, 690);
-            windMillPath.lineTo(695, 540);
-            windMillPath.lineTo(185, 540);
-            windMillPath.lineTo(185, 210);
-            windMillPath.lineTo(585, 210);
+            windMillPath.moveTo((float) (width/2.06), (float) (height/1.04));
+            windMillPath.lineTo((float) (width/2.06), (float) (height/1.58));
+            windMillPath.lineTo((float) (width/2.99), (float) (height/1.58));
+            windMillPath.lineTo((float) (width/2.99), (float) (height/2.11));
+            windMillPath.lineTo((float) (width/2.37), (float) (height/2.11));
+            windMillPath.lineTo((float) (width/2.37), (float) (height/2.69));
+            windMillPath.lineTo((float) (width/8.90), (float) (height/2.69));
+            windMillPath.lineTo((float) (width/8.90), (float) (height/6.93));
+            windMillPath.lineTo((float) (width/2.81), (float) (height/6.93));
             Holder h = new Holder(Color.RED, windMillPath);
             h.isSelected();
             holderList.add(h);
@@ -210,13 +220,13 @@ public class MapView extends View {
         baseSelected = (draw) ? 2 : -1;
         if(draw) {
             Path hostelPath = new Path();
-            hostelPath.moveTo(800, 1400);
-            hostelPath.lineTo(800, 540);
-            hostelPath.lineTo(1000, 540);
-            hostelPath.lineTo(1000, 760);
-            hostelPath.lineTo(1200, 760);
-            hostelPath.lineTo(1200, 210);
-            hostelPath.lineTo(1050, 210);
+            hostelPath.moveTo((float) (width/2.06), (float) (height/1.04));
+            hostelPath.lineTo((float) (width/2.06), (float) (height/2.69));
+            hostelPath.lineTo((float) (width/1.64), (float) (height/2.69));
+            hostelPath.lineTo((float) (width/1.64), (float) (height/1.91));
+            hostelPath.lineTo((float) (width/1.37), (float) (height/1.91));
+            hostelPath.lineTo((float) (width/1.37), (float) (height/6.93));
+            hostelPath.lineTo((float) (width/1.56), (float) (height/6.93));
             Holder h = new Holder(Color.RED, hostelPath);
             h.isSelected();
             holderList.add(h);
@@ -229,37 +239,37 @@ public class MapView extends View {
         baseSelected = (draw) ? 3 : -1;
         if(draw) {
             Path beginMutualPath = new Path();
-            beginMutualPath.moveTo(800, 1400);
-            beginMutualPath.lineTo(800, 920);
+            beginMutualPath.moveTo((float) (width/2.06), (float) (height/1.04));
+            beginMutualPath.lineTo((float) (width/2.06), (float) (height/1.58));
             holderList.add(new Holder(Color.BLACK, beginMutualPath));
 
             Path casltePath = new Path();
-            casltePath.moveTo(800, 920);
-            casltePath.lineTo(800, 540);
-            casltePath.lineTo(1000, 540);
-            casltePath.lineTo(1000, 760);
-            casltePath.lineTo(1200, 760);
-            casltePath.lineTo(1200, 210);
-            casltePath.lineTo(1565, 210);
-            casltePath.lineTo(1565, 850);
+            casltePath.moveTo((float) (width/2.06), (float) (height/1.58));
+            casltePath.lineTo((float) (width/2.06), (float) (height/2.69));
+            casltePath.lineTo((float) (width/1.64), (float) (height/2.69));
+            casltePath.lineTo((float) (width/1.64), (float) (height/1.91));
+            casltePath.lineTo((float) (width/1.37), (float) (height/1.91));
+            casltePath.lineTo((float) (width/1.37), (float) (height/6.93));
+            casltePath.lineTo((float) (width/1.05), (float) (height/6.93));
+            casltePath.lineTo((float) (width/1.05), (float) (height/1.71));
             holderList.add(new Holder(Color.RED, casltePath));
 
             Path castlePath2 = new Path();
-            castlePath2.moveTo(800, 920);
-            castlePath2.lineTo(1410, 920);
+            castlePath2.moveTo((float) (width/2.06), (float) (height/1.58));
+            castlePath2.lineTo((float) (width/1.16), (float) (height/1.58));
             holderList.add(new Holder(Color.BLUE, castlePath2));
 
             Path castlePath3 = new Path();
-            castlePath3.moveTo(800, 1175);
-            castlePath3.lineTo(1000, 1175);
-            castlePath3.lineTo(1000, 1330);
-            castlePath3.lineTo(1150, 1330);
-            castlePath3.lineTo(1150, 1090);
-            castlePath3.lineTo(1260, 1090);
-            castlePath3.lineTo(1260, 1330);
-            castlePath3.lineTo(1370, 1330);
-            castlePath3.lineTo(1370, 1090);
-            castlePath3.lineTo(1450, 1090);
+            castlePath3.moveTo((float) (width/2.06), (float) (height/1.23));
+            castlePath3.lineTo((float) (width/1.64), (float) (height/1.23));
+            castlePath3.lineTo((float) (width/1.64), (float) (height/1.09));
+            castlePath3.lineTo((float) (width/1.43), (float) (height/1.09));
+            castlePath3.lineTo((float) (width/1.43), (float) (height/1.33));
+            castlePath3.lineTo((float) (width/1.30), (float) (height/1.33));
+            castlePath3.lineTo((float) (width/1.30), (float) (height/1.09));
+            castlePath3.lineTo((float) (width/1.20), (float) (height/1.09));
+            castlePath3.lineTo((float) (width/1.20), (float) (height/1.33));
+            castlePath3.lineTo((float) (width/1.13), (float) (height/1.33));
             holderList.add(new Holder(Color.YELLOW, castlePath3));
         }
     }

@@ -5,15 +5,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,6 +19,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,13 +77,14 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
     private static final int SHAKE_THRESHOLD = 2000;
 
     private Socket mSocket;
-    private int goldAmount = 1000;
+    private int goldAmount = 0;
 
     private String selectedBase = "";
 
     private CustomAdapter adapter;
 
     private CountDownTimer timer;
+    private CountDownTimer timer2;
 
     private boolean canPower1 = true;
     private boolean canPower2 = true;
@@ -93,6 +92,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
     private int partyDuration = 600000;
 
     private MaterialTapTargetPrompt baseShowCase, pathShowCase, monsterShowCase, monsterDisableShowCase, speedPowerShowCase;
+    private MediaPlayer mpWhip;
 
     private boolean isTutorial;
     NiftyDialogBuilder dialogBuilder;
@@ -107,21 +107,22 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isTutorial = getIntent().getBooleanExtra("tutorial", true);
+        isTutorial = getIntent().getBooleanExtra("tutorial", false);
         attackerName = getIntent().getStringExtra("name");
 
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
         Gson gson = new Gson();
+        mpWhip = MediaPlayer.create(getApplicationContext(), R.raw.ouitch);
 
         /**** TEMP ****/
         ArrayList<Monster> ar = new ArrayList<>();
-        ar.add(new Monster(0, "skeleton", 100, 10, 10, R.drawable.squelette, true, 100));
-        ar.add(new Monster(1, "warrior", 150, 10, 20, R.drawable.guerrier, true, 100));
-        ar.add(new Monster(2, "magdamonster", 300, 200, 200, R.drawable.magdamonster, true, 50));
-        ar.add(new Monster(3, "caterpillar", 500, 75, 120, R.drawable.caterpillar, true, 30));
-
+        ar.add(new Monster(0, "skeleton", 100, 1, 15, R.drawable.squelette, true, 100));
+        ar.add(new Monster(1, "warrior", 250, 3, 100, R.drawable.guerrier, true, 100));
+        ar.add(new Monster(3, "caterpillar", 200, 5, 500, R.drawable.caterpillar, true, 30));
+        ar.add(new Monster(2, "magdamonster", 1000, 10, 2500, R.drawable.magdamonster, true, 50));
+        ar.add(new Monster(4, "behemoth", 5000, 25, 10000, R.drawable.behemoth, true, 90));
         SharedPreferences sharedPreferences = getBaseContext().getSharedPreferences("MONSTER", MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = sharedPreferences.edit();
         String json = gson.toJson(ar);
@@ -191,13 +192,15 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
 
         } else {
+            mGridView.getLayoutParams().height = RelativeLayout.LayoutParams.MATCH_PARENT;
+            mGridView.requestLayout();
             mBeginGame.setVisibility(View.GONE);
             mGoldAmount.setText(Integer.toString(goldAmount));
             timer = new CountDownTimer(partyDuration, 1000) { // adjust the milli seconds here
 
                 public void onTick(long millisUntilFinished) {
-                    long nbMinutesSinceBegin = ((partyDuration - millisUntilFinished)/60000)+1;
-                    goldAmount += 10*nbMinutesSinceBegin;
+                    long nbMinutesSinceBegin = ((partyDuration - millisUntilFinished)/30000)+1;
+                    goldAmount += 20*nbMinutesSinceBegin;
                     mGoldAmount.setText(Integer.toString(goldAmount)); // Gagne de l'argent au fur et à mesure du temps
                     mTimer.setText(String.format("%d:%d ",
                             TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
@@ -240,7 +243,28 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
                     .show();
         }
 
+        ViewTreeObserver vto = mapView.getViewTreeObserver();
+        vto.addOnGlobalLayoutListener (new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mapView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
 
+                castleBase.setX((float) (mapView.getWidth()/1.20));
+                castleBase.setY((float) (mapView.getHeight()/1.65));
+
+                churchBase.setX((float) (10));
+                churchBase.setY((float) (mapView.getHeight()/2));
+
+                millBase.setX((float) (mapView.getWidth()/2.80));
+                millBase.setY((float) (mapView.getHeight()/10));
+
+                hostelBase.setX((float) (mapView.getWidth()/2.00));
+                hostelBase.setY((float) (mapView.getHeight()/10));
+
+                //android:layout_x="668dp"
+                //android:layout_y="441dp"
+            }
+        });
 
 
         mSocket.on("state", new Emitter.Listener() {
@@ -249,23 +273,23 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                JSONObject json = (JSONObject) args[0];
-                try
-                {
-                    if(json.getString("action").equals("pause")) {
-                        Snackbar.make(findViewById(R.id.relLayout), "Jeux en pause", Snackbar.LENGTH_SHORT).show();
-                    } else if(json.getString("action").equals("stop")) {
-                        Snackbar.make(findViewById(R.id.relLayout), "Jeux stoppé", Snackbar.LENGTH_SHORT).show();
-                        mTimer.setText("FIN !");
-                        showEndModal("VICTOIRE", "Bravo ! Vous avez détruit toutes les bases", R.drawable.medal);
-                    } else if(json.getString("action").equals("resume")){
-                        Snackbar.make(findViewById(R.id.relLayout), "Le jeu repart", Snackbar.LENGTH_SHORT).show();
+                    JSONObject json = (JSONObject) args[0];
+                    System.out.println(json);
+                    try
+                    {
+                        if(json.getString("action").equals("pause")) {
+                            Snackbar.make(findViewById(R.id.relLayout), "Jeux en pause", Snackbar.LENGTH_SHORT).show();
+                        } else if(json.getString("action").equals("stop")) {
+                            mTimer.setText("FIN !");
+                            showEndModal("VICTOIRE", "Bravo ! Vous avez détruit toutes les bases", R.drawable.medal);
+                        } else if(json.getString("action").equals("resume")){
+                            Snackbar.make(findViewById(R.id.relLayout), "Le jeu repart", Snackbar.LENGTH_SHORT).show();
+                        }
                     }
-                }
-                catch(JSONException e)
-                {
-                    e.printStackTrace();
-                }
+                    catch(JSONException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             });
             }
@@ -352,7 +376,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
     @OnClick(R.id.churchBase)
     public void selectchurchBase(View view) {
         if(!isTutorial) {
-            selectedBase = (selectedBase.equals("church")) ? "" : "church";
+            selectedBase = (selectedBase.equals("cathedral")) ? "" : "cathedral";
             mapView.generateChurchPaths(!selectedBase.equals(""));
         }
     }
@@ -373,7 +397,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
         mapView.setPathSelected(0);
     }
 
-    @OnClick(R.id.power1)
+    /*@OnClick(R.id.power1)
     public void activatePower1(View view) {
         if(canPower1) {
             canPower1 = false;
@@ -394,21 +418,24 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
                 }
             }.start();
         }
-    }
+    }*/
 
     public void activateSpeedPower(View view) {
         if(canPower2) {
             Log.d("speedpower", "speedpower activated");
+            mpWhip.start();
             Snackbar.make(findViewById(R.id.relLayout), "Vitesse des monstres améliorées temporairement", Snackbar.LENGTH_SHORT).show();
-            speedPowerShowCase.dismiss();
+            if(isTutorial)
+                speedPowerShowCase.dismiss();
+
             canPower2 = false;
             try {
-                mSocket.emit("power", new JSONObject().put("power", "speed").put("name", attackerName));
-                final float maxTime = 60000;
+                mSocket.emit("power", new JSONObject().put("power", "speed").put("name", attackerName).put("action", "use"));
+                final float maxTime = 10000;
                 int interval = 100;
                 mPower2.setProgress(100, false);
                 mPower2.setColorNormal(Color.GRAY);
-                timer = new CountDownTimer(60000, interval) { // adjust the milli seconds here
+                timer2 = new CountDownTimer((int) maxTime, interval) { // adjust the milli seconds here
                     public void onTick(long millisUntilFinished) {
                         float progress = (millisUntilFinished/maxTime)*100;
                         mPower2.setProgress((int) progress, true);
@@ -445,9 +472,9 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
 
     private void showEndModal(String title, String body, int icon) {
-        final NiftyDialogBuilder dialogBuilder= NiftyDialogBuilder.getInstance(this);
+        final NiftyDialogBuilder dialogBuilderr= NiftyDialogBuilder.getInstance(this);
 
-        dialogBuilder.withTitle(title)
+        dialogBuilderr.withTitle(title)
             .withMessage(body)
             .withButton1Text("Rejouer")
             .isCancelableOnTouchOutside(false)
@@ -513,7 +540,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
                     {
                         if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
                         {
-                            speedPowerShowCase.finish();
+                            System.out.println("NOPE");
                         }
                     }
                 }).create();

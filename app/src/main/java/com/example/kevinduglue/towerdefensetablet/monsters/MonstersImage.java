@@ -10,7 +10,8 @@ public enum MonstersImage {
     SKELETON(R.drawable.squelette , "skeleton"),
     WARRIOR(R.drawable.guerrier, "warrior"),
     THUNDER(R.drawable.magdamonster, "magdamonster"),
-    CATERPILLAR(R.drawable.caterpillar,"caterpillar");
+    CATERPILLAR(R.drawable.caterpillar,"caterpillar"),
+    BEHEMOTH(R.drawable.behemoth, "behemoth");
 
     private int imageRes;
     private String monsterName;

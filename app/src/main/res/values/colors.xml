@@ -13,4 +13,5 @@
     <color name="path1">#9C27B0</color>
     <color name="crunch_background">#34495e</color>
     <color name="crunch_text">#1abc9c</color>
+    <color name="fog_tutorial">#D9BFBFBF</color>
 </resources>
