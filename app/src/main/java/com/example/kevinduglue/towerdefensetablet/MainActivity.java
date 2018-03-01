@@ -36,7 +36,9 @@ import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,6 +65,7 @@ public class MainActivity extends AppCompatActivity{
     private Socket mSocket;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor prefsEditor;
+    private HashMap<String, Integer[]> basesPdv = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,13 +129,9 @@ public class MainActivity extends AppCompatActivity{
                                 Intent intent = new Intent(getApplicationContext(), HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.putExtra("tutorial", true);
                                 intent.putExtra("name", mPlayerName.getText());
+                                intent.putExtra("basesHealth", basesPdv);
                                 startActivity(intent);
-                            } else if(data.getString("action").equals("start")) {
-                                mWaitingText.setText("La partie peut commencer !");
-                                mTextEnterLayout.setVisibility(View.GONE);
-                                Intent intent = new Intent(getApplicationContext(), HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                intent.putExtra("name", mPlayerName.getText());
-                                startActivity(intent);
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -167,6 +166,31 @@ public class MainActivity extends AppCompatActivity{
                             String json = gson.toJson(monsterList);
                             prefsEditor.putString("Monsters", json);
                             prefsEditor.commit();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+
+        mSocket.on("base", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        JSONObject data = (JSONObject) args[0];
+                        try {
+                            JSONArray basesJson = data.getJSONArray("bases");
+                            for(int i = 0; i < basesJson.length(); i++)
+                            {
+                                JSONObject baseJson = basesJson.getJSONObject(i);
+                                Integer[] hp = new Integer[2];
+                                hp[0] = baseJson.getInt("hp");
+                                hp[1] = baseJson.getInt("hp");
+                                basesPdv.put(baseJson.getString("name"), hp);
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

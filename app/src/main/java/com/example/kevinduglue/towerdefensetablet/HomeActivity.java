@@ -19,6 +19,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,13 +35,16 @@ import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyDialogBuilder;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -74,6 +78,16 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
     @BindView(R.id.beginGame) Button mBeginGame;
 
+    @BindView(R.id.cathedralHealthLayout) LinearLayout cathedralHealthLayout;
+    @BindView(R.id.hostelHealthLayout) LinearLayout hostelHealthLayout;
+    @BindView(R.id.windmillHealthLayout) LinearLayout windmillHealthLayout;
+    @BindView(R.id.castleHealthLayout) LinearLayout castleHealthLayout;
+
+    @BindView(R.id.castleHealth) TextView castleHealth;
+    @BindView(R.id.windmillHealth) TextView windmillHealth;
+    @BindView(R.id.hostelHealth) TextView hostelHealth;
+    @BindView(R.id.cathedralHealth) TextView cathedralHealth;
+
     private static final int SHAKE_THRESHOLD = 2000;
 
     private Socket mSocket;
@@ -89,7 +103,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
     private boolean canPower1 = true;
     private boolean canPower2 = true;
 
-    private int partyDuration = 600000;
+    private int partyDuration = 6000000;
 
     private MaterialTapTargetPrompt baseShowCase, pathShowCase, monsterShowCase, monsterDisableShowCase, speedPowerShowCase;
     private MediaPlayer mpWhip;
@@ -104,12 +118,14 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
     private String attackerName;
 
+    private HashMap<String, Integer> basesHealth = new HashMap<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        isTutorial = getIntent().getBooleanExtra("tutorial", false);
+        isTutorial = getIntent().getBooleanExtra("tutorial", true);
         attackerName = getIntent().getStringExtra("name");
-
+        basesHealth = (HashMap<String, Integer>) getIntent().getSerializableExtra("basesHealth");
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
@@ -129,6 +145,19 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
         prefsEditor.putString("Monsters", json);
         prefsEditor.commit();
         /**** TEMP ****/
+
+        if(isTutorial) {
+            basesHealth = new HashMap<>();
+            basesHealth.put("cathedral", 1000);
+            basesHealth.put("castle", 1000);
+            basesHealth.put("windmill", 1000);
+            basesHealth.put("tavern", 1000);
+        }
+
+
+        //Todo:
+        updateBasesHealth();
+
 
         SharedPreferences appSharedPrefs = getBaseContext().getSharedPreferences("MONSTER", MODE_PRIVATE);
 
@@ -227,7 +256,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
 
             dialogBuilder.withTitle("Debut de la partie")
-                    .withMessage("Detruisez au moins une base ennemie en moins de 10 minutes pour remporter la partie. Bonne chance !")
+                    .withMessage("Detruisez une base ennemie en moins de 10 minutes pour remporter la partie. Bonne chance !")
                     .withButton1Text("Combattre !")
                     .isCancelableOnTouchOutside(false)
                     .isCancelable(false)
@@ -251,18 +280,23 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
 
                 castleBase.setX((float) (mapView.getWidth()/1.20));
                 castleBase.setY((float) (mapView.getHeight()/1.65));
+                castleHealthLayout.setX((float) (mapView.getWidth()/1.20));
+                castleHealthLayout.setY((float) ((mapView.getHeight()/1.65)+castleBase.getHeight()));
 
                 churchBase.setX((float) (10));
                 churchBase.setY((float) (mapView.getHeight()/2));
+                cathedralHealthLayout.setX((float) (10));
+                cathedralHealthLayout.setY((float) ((mapView.getHeight()/2)+churchBase.getHeight()));
 
                 millBase.setX((float) (mapView.getWidth()/2.80));
                 millBase.setY((float) (mapView.getHeight()/10));
+                windmillHealthLayout.setX((float) (mapView.getWidth()/2.80));
+                windmillHealthLayout.setY((float) ((mapView.getHeight()/10)+millBase.getHeight()));
 
                 hostelBase.setX((float) (mapView.getWidth()/2.00));
                 hostelBase.setY((float) (mapView.getHeight()/10));
-
-                //android:layout_x="668dp"
-                //android:layout_y="441dp"
+                hostelHealthLayout.setX((float) (mapView.getWidth()/2.00));
+                hostelHealthLayout.setY((float) ((mapView.getHeight()/10)+hostelBase.getHeight()));
             }
         });
 
@@ -306,13 +340,52 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
                             if(data.getString("action").equals("start")) {
                                 Intent intent = new Intent(getApplicationContext(), HomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 intent.putExtra("name", attackerName);
+                                intent.putExtra("basesHealth", basesHealth);
+                                intent.putExtra("tutorial", false);
+                                mSocket.off();
+                                sensorMgr.unregisterListener(HomeActivity.this);
                                 startActivity(intent);
+                                mSocket.off();
+
+                                finish();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 });
+            }
+        });
+
+        mSocket.on("base", new Emitter.Listener() {
+            @Override
+            public void call(final Object... args) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                JSONObject data = (JSONObject) args[0];
+                try {
+                    System.out.println(data);
+                    if(data.has("bases")) {
+
+                        JSONArray basesJson = data.getJSONArray("bases");
+                        for(int i = 0; i < basesJson.length(); i++)
+                        {
+                            JSONObject baseJson = basesJson.getJSONObject(i);
+                            basesHealth.put(baseJson.getString("name"), baseJson.getInt("hp"));
+                        }
+                    } else {
+                        String name = data.getString("name");
+                        int delta = data.getInt("delta");
+                        basesHealth.put(name, basesHealth.get(name)+delta);
+                        updateBasesHealth();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            });
             }
         });
     }
@@ -397,29 +470,6 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
         mapView.setPathSelected(0);
     }
 
-    /*@OnClick(R.id.power1)
-    public void activatePower1(View view) {
-        if(canPower1) {
-            canPower1 = false;
-            final float maxTime = 10000;
-            int interval = 100;
-            mPower1.setProgress(100, false);
-            mPower1.setColorNormal(Color.GRAY);
-            timer = new CountDownTimer(10000, interval) { // adjust the milli seconds here
-                public void onTick(long millisUntilFinished) {
-                    float progress = (millisUntilFinished/maxTime)*100;
-                    mPower1.setProgress((int) progress, true);
-                }
-
-                public void onFinish() {
-                    mPower1.setProgress(0, true);
-                    mPower1.setColorNormal(Color.RED);
-                    canPower1 = true;
-                }
-            }.start();
-        }
-    }*/
-
     public void activateSpeedPower(View view) {
         if(canPower2) {
             Log.d("speedpower", "speedpower activated");
@@ -453,28 +503,24 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
         }
     }
 
-    @OnClick(R.id.beginGame)
-    public void beginGame(View view) {
+    //@OnClick(R.id.beginGame)
+    public void endTutorial() {
+        dialogBuilder= NiftyDialogBuilder.getInstance(this);
         dialogBuilder.withTitle("Fin du tutoriel")
             .withMessage("Vous venez de finir le tutoriel en tant qu'attaquant. Veuillez attendre que les defenseurs finissent également le tutoriel")
             .isCancelableOnTouchOutside(false)
-            .withButton1Text("Revenir au tutoriel")
+            .isCancelable(false)
             .withDialogColor("#34495e")
             .withTitleColor("#1abc9c")
             .withIcon(getResources().getDrawable(R.drawable.logo))
-            .setButton1Click(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogBuilder.dismiss();
-                }
-            }).show();
+            .show();
     }
 
 
     private void showEndModal(String title, String body, int icon) {
-        final NiftyDialogBuilder dialogBuilderr= NiftyDialogBuilder.getInstance(this);
-
-        dialogBuilderr.withTitle(title)
+        dialogBuilder= NiftyDialogBuilder.getInstance(this);
+        System.out.println(isTutorial);
+        dialogBuilder.withTitle(title)
             .withMessage(body)
             .withButton1Text("Rejouer")
             .isCancelableOnTouchOutside(false)
@@ -488,6 +534,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
                     dialogBuilder.dismiss();
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+                    finish();
                 }
             })
             .show();
@@ -540,6 +587,7 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
                     {
                         if (state == MaterialTapTargetPrompt.STATE_FOCAL_PRESSED)
                         {
+                            //endTutorial();
                             System.out.println("NOPE");
                         }
                     }
@@ -662,5 +710,19 @@ public class HomeActivity extends AppCompatActivity implements SensorListener{
     @Override
     public void onAccuracyChanged(int i, int i1) {
 
+    }
+
+    private void updateBasesHealth() {
+        for(Map.Entry<String, Integer> entry : basesHealth.entrySet()) {
+            if(entry.getKey().equals("cathedral")){
+                this.cathedralHealth.setText(entry.getValue().toString());
+            } else if(entry.getKey().equals("windmill")) {
+                this.windmillHealth.setText(entry.getValue().toString());
+            } else if(entry.getKey().equals("castle")) {
+                this.castleHealth.setText(entry.getValue().toString());
+            } else {
+                this.hostelHealth.setText(entry.getValue().toString());
+            }
+        }
     }
 }

@@ -120,7 +120,9 @@
 
         <AbsoluteLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/power1">
 
             <ImageButton
                 android:id="@+id/castleBase"
@@ -181,6 +183,102 @@
                 android:background="@drawable/pathtutorial"
                 fab:layout_editor_absoluteX="512dp"
                 fab:layout_editor_absoluteY="504dp" />
+
+            <LinearLayout
+                android:id="@+id/cathedralHealthLayout"
+                android:layout_width="128dp"
+                android:layout_height="34dp"
+                android:orientation="horizontal"
+                fab:layout_editor_absoluteX="8dp"
+                fab:layout_editor_absoluteY="470dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/like" />
+
+                <TextView
+                    android:id="@+id/cathedralHealth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="coucou"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/windmillHealthLayout"
+                android:layout_width="128dp"
+                android:layout_height="34dp"
+                android:orientation="horizontal"
+                fab:layout_editor_absoluteX="8dp"
+                fab:layout_editor_absoluteY="470dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/like" />
+
+                <TextView
+                    android:id="@+id/windmillHealth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="coucou"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/hostelHealthLayout"
+                android:layout_width="128dp"
+                android:layout_height="34dp"
+                android:orientation="horizontal"
+                fab:layout_editor_absoluteX="8dp"
+                fab:layout_editor_absoluteY="470dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/like" />
+
+                <TextView
+                    android:id="@+id/hostelHealth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="coucou"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/castleHealthLayout"
+                android:layout_width="128dp"
+                android:layout_height="34dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="230dp"
+                android:layout_marginStart="184dp"
+                android:orientation="horizontal"
+                fab:layout_editor_absoluteX="8dp"
+                fab:layout_editor_absoluteY="470dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/like" />
+
+                <TextView
+                    android:id="@+id/castleHealth"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="coucou"
+                    android:textColor="@color/white"
+                    android:textSize="28sp" />
+            </LinearLayout>
 
         </AbsoluteLayout>
 
